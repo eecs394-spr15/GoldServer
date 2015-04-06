@@ -3,7 +3,8 @@ var express = require('express'),
   mongoose = require('mongoose'),
   path = require('path'),
   rootPath = path.normalize(__dirname + '/..'),
-  messageTransform = require('../services/messageHandler.js')
+  messageTransform = require('../services/messageHandler.js'),
+  twilio = require('twilio');
 
 var message = require(rootPath + '/models/message')
 
@@ -22,8 +23,15 @@ router.get('/messages', function(req, res){
 })
 
 router.post('/messages', function(req, res){
-  var mes = req.body.mes;
-  messageTransform(mes);
+    if (twilio.validateExpressRequest(req, process.env.TWILIO_KEY)) {
+        var twiml = new twilio.TwimlResponse();
+        twiml.say('Node worked with Twilio.');
+        res.type('text/xml');
+        res.send(twiml.toString());
+    }
+    else {
+        res.send('Error');
+    }
 })
 
 router.get('/messages/:id', function(req, res){

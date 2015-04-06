@@ -15,12 +15,22 @@ require('./config/express')(app, config);
 
 app.listen(config.port);
 
+seed();
 
-var newMessage = new messages({
-	text: "Today was the best day ever!"
-})
+function seed(){
+	var newMessage1 = new messages({
+		text: "Test message 1"
+	})
+	newMessage1.save(function(err, newMessage){
+		if(err) return err;
+		console.log('text: ' + newMessage['text']);
+	})	
 
-newMessage.save(function(err, newMessage){
-	if(err) return err;
-	console.log('text: ' + newMessage['text']);
-})
+	var newMessage2 = new messages({
+		text: "Test message 2"
+	})
+	newMessage2.save(function(err, newMessage){
+		if(err) return err;
+		console.log('text: ' + newMessage['text']);
+	})
+}

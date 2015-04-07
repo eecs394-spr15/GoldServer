@@ -1,5 +1,6 @@
 var express = require('express'),
 	config = require('./config/config'),
+	bodyParser = require('body-parser'),
 	mongoose = require('mongoose');
 
 mongoose.connect(config.db);

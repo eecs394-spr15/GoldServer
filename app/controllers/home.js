@@ -23,15 +23,25 @@ router.get('/messages', function(req, res){
 })
 
 router.post('/messages', function(req, res){
-    if (twilio.validateExpressRequest(req, process.env.TWILIO_KEY)) {
-        var twiml = new twilio.TwimlResponse();
-        twiml.say('Node worked with Twilio.');
-        res.type('text/xml');
-        res.send(twiml.toString());
-    }
-    else {
-        res.send('Error');
-    }
+  var newMessage = new message({
+    text: req.body.Body
+  })
+  newMessage.save(function(err, newMessage){
+    if(err) return err;
+    console.log('text: ' + newMessage['text']);
+  })
+  console.log(req.body.Body);
+    // if (twilio.validateExpressRequest(req, '99b30f488be7d5b20941cb94d515bdc9')) {
+    //     console.log('it worked');
+    //     var twiml = new twilio.TwimlResponse();
+    //     twiml.message('Node worked with Twilio.');
+    //     res.type('text/xml');
+    //     res.send(twiml);
+    // }
+    // else {
+    //     console.log('didnt work');
+    //     res.send('Error');
+    // }
 })
 
 router.get('/messages/:id', function(req, res){

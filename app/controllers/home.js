@@ -30,7 +30,6 @@ router.post('/messages', function(req, res){
     if(err) return err;
     console.log('text: ' + newMessage['text']);
   })
-  console.log(req.body.Body);
     // if (twilio.validateExpressRequest(req, '99b30f488be7d5b20941cb94d515bdc9')) {
     //     console.log('it worked');
     //     var twiml = new twilio.TwimlResponse();

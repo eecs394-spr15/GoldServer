@@ -37,8 +37,27 @@ router.post('/messages', function(req, res){
   res.send(twiml.toString());
 })
 
-router.get('/messages/:id', function(req, res){
+router.get('/messages/id/:id', function(req, res){
   message.find({'_id': req.params.id}, function(err, data){
     res.send(data);
   })
 })
+
+router.get('/messages/phone/:phone', function(req, res){
+  message.find({'phone': req.params.phone}, function(err, data){
+    res.send(data);
+  })
+})
+
+// router.get('/messages', function(req, res){
+//   if(req.query.length === 0){
+//     message.find({}, function(err, data){
+//       res.send(data);
+//     })
+//   } else {
+//     message.find({'phone': req.query.phone}, function(err, data){
+//       res.send(data);
+//     })
+//   }
+
+// })

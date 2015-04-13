@@ -5,7 +5,7 @@ var messageSchema = new Schema({
   text: String,
   date: { type: Date, default: Date.now },
   phone: String,
-  rating: Number
+  rating: { type: Number, default: 0 }
 });
 
 // messageSchema.virtual('date')

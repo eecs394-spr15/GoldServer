@@ -4,7 +4,8 @@ var mongoose = require('mongoose'),
 var messageSchema = new Schema({
   text: String,
   date: { type: Date, default: Date.now },
-  phone: String
+  phone: String,
+  rating: Number
 });
 
 // messageSchema.virtual('date')

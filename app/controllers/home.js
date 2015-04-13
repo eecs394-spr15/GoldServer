@@ -19,10 +19,12 @@ router.get('/', function (req, res, next) {
 
 router.post('/messages', function(req, res){
   var newMessageObj = KoalaParse(req.body.Body);
+  var pn = req.body.From;
+  pn = pn.substring(2);
   var newMessage = new message({
     text: newMessageObj.message,
     rating: newMessageObj.rating,
-    phone: req.body.From
+    phone: pn
   })
   newMessage.save(function(err, newMessage){
     if(err) return err;

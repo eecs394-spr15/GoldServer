@@ -4,7 +4,8 @@ var express = require('express'),
   path = require('path'),
   rootPath = path.normalize(__dirname + '/..'),
   messageTransform = require('../services/messageHandler.js'),
-  twilio = require('twilio');
+  twilio = require('twilio'),
+  KoalaParse = require('../services/KoalaParse.js');
 
 var message = require(rootPath + '/models/message')
 
@@ -17,8 +18,10 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/messages', function(req, res){
+  var newMessageObj = KoalaParse(req.body.Body);
   var newMessage = new message({
-    text: req.body.Body,
+    text: newMessageObj.message,
+    rating: newMessageObj.rating,
     phone: req.body.From
   })
   newMessage.save(function(err, newMessage){

@@ -15,9 +15,7 @@ function KoalaParse(str){
 		ratingPart = 5;
 	}
 	var returnObj = {message: messagePart, rating: ratingPart};
-	console.log(returnObj.message);
-	console.log(returnObj.rating);
-	console.log(returnObj);
+	
 	return returnObj;
 	
 }

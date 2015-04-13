@@ -16,12 +16,6 @@ router.get('/', function (req, res, next) {
   res.send('Koala');
 });
 
-router.get('/messages', function(req, res){
-  message.find({}, function(err, data){
-    res.send(data);
-  })
-})
-
 router.post('/messages', function(req, res){
   var newMessage = new message({
     text: req.body.Body,
@@ -49,15 +43,18 @@ router.get('/messages/phone/:phone', function(req, res){
   })
 })
 
-// router.get('/messages', function(req, res){
-//   if(req.query.length === 0){
-//     message.find({}, function(err, data){
-//       res.send(data);
-//     })
-//   } else {
-//     message.find({'phone': req.query.phone}, function(err, data){
-//       res.send(data);
-//     })
-//   }
+router.get('/messages', function(req, res){
+  console.log(req.query);
+  if(Object.keys(req.query).length === 0){
+    message.find({}).exec()
+    .then(function(data){
+      return res.send(data);
+    })
+  } else {
+    message.find({'phone': req.query.phone}).exec()
+    .then(function(data){
+      return res.send(data);
+    })
+  }
 
-// })
+})

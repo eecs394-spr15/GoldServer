@@ -24,7 +24,8 @@ router.get('/messages', function(req, res){
 
 router.post('/messages', function(req, res){
   var newMessage = new message({
-    text: req.body.Body
+    text: req.body.Body,
+    phone: req.body.From
   })
   newMessage.save(function(err, newMessage){
     if(err) return err;

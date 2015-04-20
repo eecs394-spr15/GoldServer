@@ -7,7 +7,9 @@ var express = require('express'),
   twilio = require('twilio'),
   KoalaParse = require('../services/KoalaParse.js');
 
-var message = require(rootPath + '/models/message')
+var message = require(rootPath + '/models/message');
+
+var client = new twilio.RestClient(process.env.TWILIO_SID, process.env.TWILIO_KEY);
 
 module.exports = function (app) {
   app.use('/', router);
@@ -36,20 +38,7 @@ router.post('/messages', function(req, res){
   res.send(twiml.toString());
 })
 
-router.get('/messages/id/:id', function(req, res){
-  message.find({'_id': req.params.id}, function(err, data){
-    res.send(data);
-  })
-})
-
-router.get('/messages/phone/:phone', function(req, res){
-  message.find({'phone': req.params.phone}, function(err, data){
-    res.send(data);
-  })
-})
-
 router.get('/messages', function(req, res){
-  console.log(req.query);
   if(Object.keys(req.query).length === 0){
     message.find({}).exec()
     .then(function(data){
@@ -61,5 +50,22 @@ router.get('/messages', function(req, res){
       return res.send(data);
     })
   }
+
+})
+
+router.post('/users/new', function(req, res){
+  client.sms.messages.create({
+      to:req.query.phone,
+      from:'+16122551628',
+      body:'Hi, I\'m Koala'
+  }, function(error, message) {
+      if (!error) {
+          console.log('Success!');
+      } else {
+          console.log(error);
+      }
+      console.log(req.query.phone);
+      res.send('done');
+  }); 
 
 })

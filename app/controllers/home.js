@@ -3,11 +3,12 @@ var express = require('express'),
   mongoose = require('mongoose'),
   path = require('path'),
   rootPath = path.normalize(__dirname + '/..'),
-  messageTransform = require('../services/messageHandler.js'),
+  messageHandler = require('../services/messageHandler.js'),
   twilio = require('twilio'),
   KoalaParse = require('../services/KoalaParse.js');
 
 var message = require(rootPath + '/models/message');
+var user = require(rootPath + '/models/user');
 
 var client = new twilio.RestClient(process.env.TWILIO_SID, process.env.TWILIO_KEY);
 
@@ -61,6 +62,7 @@ router.post('/users/new', function(req, res){
   }, function(error, message) {
       if (!error) {
           console.log('Success!');
+
       } else {
           console.log(error);
       }

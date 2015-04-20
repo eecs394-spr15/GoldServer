@@ -9,7 +9,7 @@ var express = require('express'),
 
 var message = require(rootPath + '/models/message');
 
-var client = new twilio.RestClient('AC2924c7e982cc332eca2fa08467ad3b1e', '99b30f488be7d5b20941cb94d515bdc9');
+var client = new twilio.RestClient(process.env.TWILIO_SID, process.env.TWILIO_KEY);
 
 module.exports = function (app) {
   app.use('/', router);
@@ -38,20 +38,7 @@ router.post('/messages', function(req, res){
   res.send(twiml.toString());
 })
 
-router.get('/messages/id/:id', function(req, res){
-  message.find({'_id': req.params.id}, function(err, data){
-    res.send(data);
-  })
-})
-
-router.get('/messages/phone/:phone', function(req, res){
-  message.find({'phone': req.params.phone}, function(err, data){
-    res.send(data);
-  })
-})
-
 router.get('/messages', function(req, res){
-  console.log(req.query);
   if(Object.keys(req.query).length === 0){
     message.find({}).exec()
     .then(function(data){
@@ -68,15 +55,12 @@ router.get('/messages', function(req, res){
 
 router.post('/users/new', function(req, res){
   client.sms.messages.create({
-      to:'+1' + req.query.phone,
+      to:req.query.phone,
       from:'+16122551628',
       body:'Hi, I\'m Koala'
   }, function(error, message) {
       if (!error) {
-          console.log('Success! The SID for this SMS message is:');
-          console.log(message.sid);
-          console.log('Message sent on:');
-          console.log(message.dateCreated);
+          console.log('Success!');
       } else {
           console.log(error);
       }

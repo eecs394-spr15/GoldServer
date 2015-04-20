@@ -34,9 +34,16 @@ router.post('/messages', function(req, res){
     console.log('text: ' + newMessage['text']);
   })
   var twiml = new twilio.TwimlResponse();
-  twiml.message('Thanks! I\'ll record that entry for you.');
-  res.type('text/xml');
-  res.send(twiml.toString());
+
+  user.find({'phone':req.query.phone}).exec().then(function(data){
+      if(data.currentStatus==="active"){
+        twiml.message('Thanks! I\'ll record that entry for you.');
+        res.type('text/xml');
+        res.send(twiml.toString());
+      }
+      else if (data.currentStatus==="new") {
+        //Finish Saving
+      }
 })
 
 router.get('/messages', function(req, res){
@@ -59,23 +66,23 @@ router.post('/users/new', function(req, res){
   user.find({'phone':req.query.phone}).exec().then(function(data){
       if(data){
         client.sms.messages.create({
-        to:req.query.phone,
-        from:'+16122551628',
-        body:"Someone has tried to create a Koala account for your phone number. If this was you, please contact the Koala support team for help."
+          to:req.query.phone,
+          from:'+16122551628',
+          body:"Someone has tried to create a Koala account for your phone number. If this was you, please contact the Koala support team for help."
         }, function(error, message) {
           if (!error) {
             console.log('Sent user creation error');
           } else {
-          console.log(error);
-        }
-        console.log(req.query.phone);
-        res.send('done');
-      }
-      else {
+            console.log(error);
+          }
+          console.log(req.query.phone);
+          res.send('done');
+      } 
+    } else {
         client.sms.messages.create({
-        to:req.query.phone,
-        from:'+16122551628',
-        body:"Hi, I\'m Koala! Please add me to your phone :) \n\nWhat should I call you?"
+          to:req.query.phone,
+          from:'+16122551628',
+          body:"Hi, I\'m Koala! Please add me to your phone :) \n\nWhat should I call you?"
         }, function(error, message) {
           if (!error) {
             console.log('Success!');
@@ -88,7 +95,7 @@ router.post('/users/new', function(req, res){
             })
             newUser.save(function(err, newUser){
             if(err) return err;
-            console.log('New user was created.');
+              console.log('New user was created.');
             })
           } else {
           console.log(error);

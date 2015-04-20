@@ -1,10 +1,11 @@
-var config = require('../../config/config'),
-  mongoose = require('mongoose'),
-  path = require('path')
-
-function main(mes){
-	console.log(mes);
-	return mes;
+function main(status){
+	console.log(status);
+	if(status==="active"){
+		return "I'll record that for you";
+	}
+	else {
+		return "Nice to meet you"
+	}
 }
 
 module.exports = main;

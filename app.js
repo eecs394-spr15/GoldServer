@@ -10,6 +10,7 @@ db.on('error', function () {
 });
 
 var messages = require(config.root + '/app/models/message')
+var user = require(config.root + '/app/models/user')
 var app = express();
 
 require('./config/express')(app, config);
@@ -75,8 +76,22 @@ function seed(){
 		phone: "9145557123",
 		rating: 2
 	})
+
+
 	newMessage5.save(function(err, newMessage){
 		if(err) return err;
 		console.log('text: ' + newMessage['text']);
+	})
+
+	var newUser = new user({
+		name: "John",
+		phone: "8479991111",
+		currentStatus: "active"
+	})
+
+	
+	newUser.save(function(err, newUser){
+		if(err) return err;
+		console.log('name: ' + newUser['name']);
 	})
 }

@@ -7,7 +7,9 @@ var express = require('express'),
   twilio = require('twilio'),
   KoalaParse = require('../services/KoalaParse.js');
 
-var message = require(rootPath + '/models/message')
+var message = require(rootPath + '/models/message');
+
+var client = new twilio.RestClient('AC2924c7e982cc332eca2fa08467ad3b1e', '99b30f488be7d5b20941cb94d515bdc9');
 
 module.exports = function (app) {
   app.use('/', router);
@@ -61,5 +63,25 @@ router.get('/messages', function(req, res){
       return res.send(data);
     })
   }
+
+})
+
+router.post('/users/new', function(req, res){
+  client.sms.messages.create({
+      to:'+1' + req.query.phone,
+      from:'+16122551628',
+      body:'Hi, I\'m Koala'
+  }, function(error, message) {
+      if (!error) {
+          console.log('Success! The SID for this SMS message is:');
+          console.log(message.sid);
+          console.log('Message sent on:');
+          console.log(message.dateCreated);
+      } else {
+          console.log(error);
+      }
+      console.log(req.query.phone);
+      res.send('done');
+  }); 
 
 })

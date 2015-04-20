@@ -55,19 +55,48 @@ router.get('/messages', function(req, res){
 })
 
 router.post('/users/new', function(req, res){
-  client.sms.messages.create({
-      to:req.query.phone,
-      from:'+16122551628',
-      body:'Hi, I\'m Koala'
-  }, function(error, message) {
-      if (!error) {
-          console.log('Success!');
-
-      } else {
+  
+  user.find({'phone':req.query.phone}).exec().then(function(data){
+      if(data){
+        client.sms.messages.create({
+        to:req.query.phone,
+        from:'+16122551628',
+        body:"Someone has tried to create a Koala account for your phone number. If this was you, please contact the Koala support team for help."
+        }, function(error, message) {
+          if (!error) {
+            console.log('Sent user creation error');
+          } else {
           console.log(error);
+        }
+        console.log(req.query.phone);
+        res.send('done');
       }
-      console.log(req.query.phone);
-      res.send('done');
+      else {
+        client.sms.messages.create({
+        to:req.query.phone,
+        from:'+16122551628',
+        body:"Hi, I\'m Koala! Please add me to your phone :) \n\nWhat should I call you?"
+        }, function(error, message) {
+          if (!error) {
+            console.log('Success!');
+            var pn = req.query.phone;
+            pn = pn.substring(2);
+            var newUser = new user({
+              name: "",
+              phone: pn,
+              currentStatus: "new"
+            })
+            newUser.save(function(err, newUser){
+            if(err) return err;
+            console.log('New user was created.');
+            })
+          } else {
+          console.log(error);
+        }
+        console.log(req.query.phone);
+        res.send('done');
   }); 
+      }
+    })
 
 })

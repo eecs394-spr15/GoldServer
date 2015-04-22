@@ -1,12 +1,15 @@
 var express = require('express'),
 	config = require('./config/config'),
 	bodyParser = require('body-parser'),
-	mongoose = require('mongoose');
+	mongoose = require('mongoose'),
+	twilio = require('twilio'),
+	client = twilio.RestClient(process.env.TWILIO_SID, process.env.TWILIO_KEY),
+	cronJob = require('cron').CronJob;
 
 mongoose.connect(config.db);
 var db = mongoose.connection;
 db.on('error', function () {
-  throw new Error('unable to connect to database at ' + config.db);
+	throw new Error('unable to connect to database at ' + config.db);
 });
 
 var messages = require(config.root + '/app/models/message')
@@ -16,6 +19,20 @@ var app = express();
 require('./config/express')(app, config);
 
 app.listen(config.port);
+
+var textJob = new cronJob( '0 21 * * *', function(){
+	client.sms.messages.create({
+		to:'9522173060',
+		from:'+16122551628',
+		body:'Cron test'
+	}, function(error, message) {
+		if (!error) {
+			console.log('Success!');
+		} else {
+			console.log(error);
+		}
+	});
+},  null, true);
 
 seed();
 
@@ -35,7 +52,7 @@ function seed(){
 	newMessage1.save(function(err, newMessage){
 		if(err) return err;
 		console.log('text: ' + newMessage['text']);
-	})	
+	})
 
 	var newMessage2 = new messages({
 		text: "It was a rainy day today and I stayed inside working on my art project.  I felt a little lonely but also accomplished.",
@@ -89,7 +106,7 @@ function seed(){
 		currentStatus: "active"
 	})
 
-	
+
 	newUser.save(function(err, newUser){
 		if(err) return err;
 		console.log('name: ' + newUser['name']);

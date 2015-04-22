@@ -57,7 +57,7 @@ router.post('/users/new', function(req, res){
   client.sms.messages.create({
       to:req.query.phone,
       from:'+16122551628',
-      body:'Hi, I\'m Koala'
+      body:'Hi! I am Koala and you should add me to your contacts! When you text me, I will store your entries in the Koala application.  Use a hashtag to rate your entry on a scale from 1 to 5. I hope today is a #5!!!!'
   }, function(error, message) {
       if (!error) {
           console.log('Success!');

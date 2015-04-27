@@ -3,7 +3,7 @@ var express = require('express'),
 	bodyParser = require('body-parser'),
 	mongoose = require('mongoose'),
 	twilio = require('twilio'),
-	client = twilio.RestClient(process.env.TWILIO_SID, process.env.TWILIO_KEY),
+	client = new twilio.RestClient(process.env.TWILIO_SID, process.env.TWILIO_KEY),
 	cronJob = require('cron').CronJob;
 
 mongoose.connect(config.db);
@@ -20,18 +20,34 @@ require('./config/express')(app, config);
 
 app.listen(config.port);
 
+var uniquePhones = [];
+console.log(uniquePhones);
+
 var textJob = new cronJob( '0 21 * * *', function(){
-	client.sms.messages.create({
-		to:'9522173060',
-		from:'+16122551628',
-		body:'Cron test'
-	}, function(error, message) {
-		if (!error) {
-			console.log('Success!');
-		} else {
-			console.log(error);
-		}
-	});
+	messages.find({}).exec()
+		.then(function(data){
+			for(var i = 0; i < data.length; i++){
+				if(uniquePhones.indexOf(data[i].phone) === -1){
+					console.log(data[i].phone);
+					uniquePhones.push(data[i].phone);
+				}
+			}
+		})
+		.then(function(){
+			for(var i = 0; i < uniquePhones.length; i++){
+				client.sms.messages.create({
+					to:uniquePhones[i],
+					from:'+16122551628',
+					body:'Hey, how was your day?'
+				}, function(error, message) {
+					if (!error) {
+						console.log('Success!');
+					} else {
+						console.log(error);
+					}
+				});
+			}
+		})
 },  null, true);
 
 seed();
@@ -57,7 +73,7 @@ function seed(){
 	var newMessage2 = new messages({
 		text: "It was a rainy day today and I stayed inside working on my art project.  I felt a little lonely but also accomplished.",
 		date: d2,
-		phone: "9145557111",
+		phone: "2244206825",
 		rating: 3
 	})
 	newMessage2.save(function(err, newMessage){
@@ -68,7 +84,7 @@ function seed(){
 	var newMessage3 = new messages({
 		text: "Today I woke up with a vast skin infection.  I laid in bed all day and was unable to do anything else - hopefully this goes away soon.",
 		date: d3,
-		phone: "9145557111",
+		phone: "9522173060",
 		rating: 1
 	})
 	newMessage3.save(function(err, newMessage){
@@ -79,7 +95,7 @@ function seed(){
 	var newMessage4 = new messages({
 		text: "I have been feeling a lot better, and my former skin infection has gone away.  I also found a 20 dollar bill on the floor. Lucky me!",
 		date: d4,
-		phone: "9145557123",
+		phone: "8189836911",
 		rating: 4
 	})
 	newMessage4.save(function(err, newMessage){

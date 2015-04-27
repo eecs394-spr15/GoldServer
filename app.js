@@ -23,6 +23,12 @@ app.listen(config.port);
 var uniquePhones = [];
 console.log(uniquePhones);
 
+var reminders =["Greetings human! How'd your day go today?","Salutations! Tell me how you've been lately.",
+	"Did you miss me? I'd sure like to hear about your day.", "Koala checking in :) What's today's entry gonna be?",
+	"Howdy friend! Was your day top koala-ity? Hit me back and let me know.", "Checking in to see how you're doing. Hope I haven't become unBEARable :P",
+	"What's on your mind? I'm a koala-fied listener.", "Hope you don't think I've gotten bored of you. Impawsible. How are you doing friend?",
+	"How'd your day go mate?", "If you don't give me a juicy entry today, you'll be disKOALAfied."]
+
 var textJob = new cronJob( '0 21 * * *', function(){
 	messages.find({}).exec()
 		.then(function(data){
@@ -38,7 +44,7 @@ var textJob = new cronJob( '0 21 * * *', function(){
 				client.sms.messages.create({
 					to:uniquePhones[i],
 					from:'+16122551628',
-					body:'Hey, how was your day?'
+					body:reminders[Math.floor(Math.random() * reminders.length)]
 				}, function(error, message) {
 					if (!error) {
 						console.log('Success!');
